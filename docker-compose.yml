@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+    mysql:
+        container_name: test-mysql
+        image: mysql:8.0.36
+        restart: always
+        ports:
+            - ${DB_PORT}:${DB_PORT}
+        environment:
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+        volumes:
+            - test-mysql:/var/lib/mysql
+    phpmyadmin:
+        container_name: test-phpmyadmin
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 8080:80
+        environment:
+            - PMA_ARBITRARY=1
+    php:
+        container_name: test-php
+        build:
+            context: docker
+            dockerfile: php/DockerFile
+        depends_on:
+            - mysql
+        working_dir : /home
+        volumes:
+            - ./test:/home
+        env_file:
+            - .env
+volumes:
+    test-mysql:
+    test-php:
