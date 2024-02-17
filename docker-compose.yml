@@ -14,18 +14,10 @@ services:
         volumes:
             - test-mysql:/var/lib/mysql
         healthcheck:
-            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u$$DB_USER", "-p$$DB_PASSWORD"]
             interval: 5s
             timeout: 20s
             retries: 30
-    phpmyadmin:
-        container_name: test-phpmyadmin
-        image: phpmyadmin
-        restart: always
-        ports:
-            - 8080:80
-        environment:
-            - PMA_ARBITRARY=1
     php:
         container_name: test-php
         build:
