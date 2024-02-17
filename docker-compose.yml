@@ -13,6 +13,11 @@ services:
             MYSQL_DATABASE: ${DB_DATABASE}
         volumes:
             - test-mysql:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            interval: 5s
+            timeout: 20s
+            retries: 30
     phpmyadmin:
         container_name: test-phpmyadmin
         image: phpmyadmin
@@ -27,8 +32,9 @@ services:
             context: docker
             dockerfile: php/DockerFile
         depends_on:
-            - mysql
-        working_dir : /home
+            mysql:
+                condition: service_healthy
+        working_dir: /home
         volumes:
             - ./test:/home
         env_file:
