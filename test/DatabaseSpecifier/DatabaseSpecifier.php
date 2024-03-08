@@ -25,16 +25,6 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
 
     private array $specifiersClass = [];
 
-    /**
-     * @var array $defaultConvertValues Массив для замены значений
-     */
-
-    private array $defaultConvertValues = [
-        true => 1,
-        false => 0,
-        null => 'NULL'
-    ];
-
     public function __construct()
     {
         $this->specifiersClass = [
@@ -59,11 +49,13 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
     {
         $specifiers = $this->getSpecifier($query);
 
-        $this->checkSpecifiers($specifiers);
+        foreach ($specifiers as $key => $specifier) {
+            if (!in_array($specifier, array_keys($this->specifiersClass))) {
+                throw new Exception("Спецификатор $specifier не существует");
+            }
 
-        foreach ($specifiers as $key => $value) {
             $specifiersArgs[] = [
-                'specifier' => $value,
+                'specifier' => $specifier,
                 'value' => $args[$key]
             ];
         }
@@ -72,104 +64,6 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
         $query = $this->fillQuery($query, $specifiersValues);
 
         return $query;
-    }
-
-    /**
-     * Метод проверки, есть ли символ (?) для вставки.
-     * Если в зпросе sql не найден символ (?) будет выброшен `Exception`.
-     * 
-     * @param string $query Запрос sql.
-     * @return bool Возвращает `true` или `false`.
-     */
-
-    public function checkPlace(string $query): bool
-    {
-        return strpos($query, '?') !== false;
-    }
-
-    /**
-     * Метод проверки, количества мест вствки в запросе sql `$query` и количества передаваемых значений `$args`.
-     * 
-     * @param string $query Запрос sql.
-     * @param array $args Массив значений для вставки.
-     * @return bool Возвращает `true` или `false`.
-     */
-
-    public function checkPlacesAndArgs(string $query, array $args): bool
-    {
-        return substr_count($query, '?') == count($args);
-    }
-
-    /**
-     * Метод для замены значений из массива `$specifiersClass`.
-     * Если значения нет в массив, назад вернется передаваемое значение `$value`.
-     * 
-     * @param mixed $value Значение.
-     * @return mixed Замененое значение | Передаваемое значение.
-     */
-
-    protected function defaultConvert(mixed $value): mixed
-    {
-        switch (gettype($value)) {
-            case 'integer':
-            case 'float':
-            case 'double':
-                return $value;
-            default:
-                if (isset($this->defaultConvertValues[$value])) {
-                    return $this->defaultConvertValues[$value];
-                } else {
-                    return $value;
-                }
-        }
-    }
-
-    /**
-     * Метод экранирования строки символом - `'`.
-     * 
-     * @param string $value Значение.
-     * @return string Обработанное значение.
-     */
-
-    protected function stringScreening(string $value): string
-    {
-        if (substr_count($value, "'") != 2) {
-            return "'" . $value . "'";
-        } else {
-            return $value;
-        }
-    }
-
-    /**
-     * Метод экранирования строки символом - `.
-     * 
-     * @param string $value Значение
-     * @return string Обработанное значение
-     */
-
-    protected function stringApostrophe(string $value): string
-    {
-        if (substr_count($value, "`") != 2) {
-            return "`" . $value . "`";
-        } else {
-            return $value;
-        }
-    }
-
-    /**
-     * Проверка спецификаторов в строке. Есть для них классы в массиве `$specifiersClass`.
-     * 
-     * @param array $specifiers Массив спецификаторов.
-     * @return void
-     */
-
-    private function checkSpecifiers(array $specifiers): void
-    {
-        foreach ($specifiers as $specifier) {
-            if (!in_array($specifier, array_keys($this->specifiersClass))) {
-                throw new Exception("Спецификатор $specifier не существует");
-            }
-        }
     }
 
     /**

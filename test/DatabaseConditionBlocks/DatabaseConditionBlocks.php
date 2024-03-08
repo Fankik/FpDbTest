@@ -27,33 +27,6 @@ class DatabaseConditionBlocks implements DatabaseConditionBlocksInterface
     }
 
     /**
-     * Метод проверяет присутствие условных болоков в заросе sql `$query`.
-     * Если присутствует вложенный условный блок, то выбрасывается `Exception`.
-     * 
-     * @param string $query Запрос sql.
-     * @return bool Возвращает `true` или `false`.
-     */
-
-    public function checkConditionalBlocks(string $query): bool
-    {
-        $result = false;
-
-        $conditions = $this->extractCondition($query);
-
-        foreach ($conditions as $condition) {
-            if (!empty($this->extractCondition($condition))) {
-                throw new Exception('Условные блоки не могут быть вложенными');
-            }
-        }
-
-        if (!empty($condition)) {
-            $result = true;
-        }
-
-        return $result;
-    }
-
-    /**
      * Метод получения обработанного запроса sql.
      * 
      * @param string $query Запрос sql.
@@ -62,8 +35,18 @@ class DatabaseConditionBlocks implements DatabaseConditionBlocksInterface
 
     public function getQuery(string $query): string
     {
-        $conditions = $this->prepareConditions($query);
-        $query = $this->fillQuery($query, $conditions);
+        $conditions = $this->extractConditions($query);
+
+        foreach ($conditions as $condition) {
+            if (!empty($this->extractConditions($condition))) {
+                throw new Exception('Условные блоки не могут быть вложенными');
+            }
+        }
+
+        if (!empty($conditions)) {
+            $conditions = $this->prepareConditions($query, $conditions);
+            $query = $this->fillQuery($query, $conditions);
+        }
 
         return $query;
     }
@@ -72,13 +55,13 @@ class DatabaseConditionBlocks implements DatabaseConditionBlocksInterface
      * Метод подготовки условных блоков для заполнения запроса.
      * 
      * @param string $query Запрос sql.
+     * @param array $conditions Массив условных блоков и значений для вставки.
      * @return array Массив условных блоков и значений для вставки.
      */
 
-    private function prepareConditions(string $query): array
+    private function prepareConditions(string $query, array $conditions): array
     {
         $result = [];
-        $conditions = $this->extractCondition($query);
 
         foreach ($conditions as $condition) {
 
@@ -101,9 +84,9 @@ class DatabaseConditionBlocks implements DatabaseConditionBlocksInterface
     /**
      * Метод заполнения запроса sql `$query` условными блоками.
      * 
-     * @param string $query Запрос sql
-     * @param array $conditions Массив условных блоков и значений для вставки
-     * @return string Возвращает запрос sql тип `string
+     * @param string $query Запрос sql.
+     * @param array $conditions Массив условных блоков и значений для вставки.
+     * @return string Возвращает запрос sql тип `string.
      */
 
     private function fillQuery(string $query, array $conditions): string
@@ -128,7 +111,7 @@ class DatabaseConditionBlocks implements DatabaseConditionBlocksInterface
      * @return array Возвращает массив найденных условных блоков в запросе sql `$query`.
      */
 
-    private function extractCondition(string $query): array
+    private function extractConditions(string $query): array
     {
         $result = [];
         $braceCount = 0;

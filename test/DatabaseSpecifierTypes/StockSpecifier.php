@@ -1,6 +1,7 @@
 <?php
 namespace FpDbTest\DatabaseSpecifierTypes;
 
+use FpDbTest\DatabaseHelper\DatabaseHelper;
 use FpDbTest\DatabaseInterfaces\DatabaseSpecifierTypesInterface;
 use FpDbTest\DatabaseSpecifier\DatabaseSpecifier;
 use Exception;
@@ -55,10 +56,10 @@ class StockSpecifier extends DatabaseSpecifier implements DatabaseSpecifierTypes
 
     public function get(): mixed
     {
-        $this->value = $this->defaultConvert($this->value);
+        $this->value = DatabaseHelper::defaultConvert($this->value);
 
         if (gettype($this->value) == "string") {
-            $this->value = $this->stringScreening($this->value);
+            $this->value = DatabaseHelper::stringScreening($this->value);
         }
 
         return $this->value;

@@ -1,6 +1,7 @@
 <?php
 namespace FpDbTest\DatabaseSpecifierTypes;
 
+use FpDbTest\DatabaseHelper\DatabaseHelper;
 use FpDbTest\DatabaseInterfaces\DatabaseSpecifierTypesInterface;
 use FpDbTest\DatabaseSpecifier\DatabaseSpecifier;
 use Exception;
@@ -55,8 +56,8 @@ class SharpSpecifier extends DatabaseSpecifier implements DatabaseSpecifierTypes
         if (is_array($this->value)) {
             foreach ($this->value as &$value) {
                 if (!is_array($value)) {
-                    $value = $this->defaultConvert($value);
-                    $value = $this->stringApostrophe($value);
+                    $value = DatabaseHelper::defaultConvert($value);
+                    $value = DatabaseHelper::stringApostrophe($value);
 
                 } else {
                     throw new Exception('Внутри значения тип array не допустим');
@@ -65,8 +66,8 @@ class SharpSpecifier extends DatabaseSpecifier implements DatabaseSpecifierTypes
 
             $this->value = implode(", ", $this->value);
         } else {
-            $this->value = $this->defaultConvert($this->value);
-            $this->value = $this->stringApostrophe($this->value);
+            $this->value = DatabaseHelper::defaultConvert($this->value);
+            $this->value = DatabaseHelper::stringApostrophe($this->value);
         }
 
         return $this->value;

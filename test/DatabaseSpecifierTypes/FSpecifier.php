@@ -1,6 +1,7 @@
 <?php
 namespace FpDbTest\DatabaseSpecifierTypes;
 
+use FpDbTest\DatabaseHelper\DatabaseHelper;
 use FpDbTest\DatabaseInterfaces\DatabaseSpecifierTypesInterface;
 use FpDbTest\DatabaseSpecifier\DatabaseSpecifier;
 use Exception;
@@ -58,7 +59,7 @@ class FSpecifier extends DatabaseSpecifier implements DatabaseSpecifierTypesInte
         $type = gettype($this->value);
 
         if ($type == 'NULL') {
-            return $this->defaultConvert($this->value);
+            return DatabaseHelper::defaultConvert($this->value);
         } else {
             return (float) $this->value;
         }

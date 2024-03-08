@@ -55,16 +55,11 @@ class Database implements DatabaseInterface
 
     public function buildQuery(string $query, array $args = []): string
     {
-        if (!$this->dbSpecifier->checkPlace($query)) {
-            return $query;
-        } else {
+        if (strpos($query, '?') !== false) { //Проверка есть ли места вставки в запросе
             if (!empty($args)) {
-                if ($this->dbSpecifier->checkPlacesAndArgs($query, $args)) {
+                if (substr_count($query, '?') == count($args)) { //Проверка соостветсвует ли кол-во мест вставки с кол-вом передаваемых аргументов
                     $query = $this->dbSpecifier->getQuery($query, $args);
-
-                    if ($this->dbConditionBlocks->checkConditionalBlocks($query)) {
-                        $query = $this->dbConditionBlocks->getQuery($query);
-                    }
+                    $query = $this->dbConditionBlocks->getQuery($query);
 
                     return $query;
                 } else {
@@ -74,6 +69,8 @@ class Database implements DatabaseInterface
             } else {
                 throw new Exception('В запросе есть место для вставки, но значения не передаются');
             }
+        } else {
+            return $query;
         }
     }
 

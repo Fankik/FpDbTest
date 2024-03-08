@@ -1,6 +1,7 @@
 <?php
 namespace FpDbTest\DatabaseSpecifierTypes;
 
+use FpDbTest\DatabaseHelper\DatabaseHelper;
 use FpDbTest\DatabaseInterfaces\DatabaseSpecifierTypesInterface;
 use FpDbTest\DatabaseSpecifier\DatabaseSpecifier;
 use Exception;
@@ -57,12 +58,12 @@ class ASpecifier extends DatabaseSpecifier implements DatabaseSpecifierTypesInte
             foreach ($this->value as $key => $value) {
                 if (!is_array($value)) {
                     if (gettype($value) == 'string') {
-                        $value = $this->stringScreening($value);
+                        $value = DatabaseHelper::stringScreening($value);
                     }
 
-                    $value = $this->defaultConvert($value);
+                    $value = DatabaseHelper::defaultConvert($value);
 
-                    $values[] = $this->stringApostrophe($key) . ' = ' . $value;
+                    $values[] = DatabaseHelper::stringApostrophe($key) . ' = ' . $value;
                 } else {
                     throw new Exception('Внутри значения тип array не допустим');
                 }
@@ -72,10 +73,10 @@ class ASpecifier extends DatabaseSpecifier implements DatabaseSpecifierTypesInte
                 if (!is_array($value)) {
 
                     if (gettype($value) == 'string') {
-                        $value = $this->stringScreening($value);
+                        $value = DatabaseHelper::stringScreening($value);
                     }
 
-                    $values[] = $this->defaultConvert($value);
+                    $values[] = DatabaseHelper::defaultConvert($value);
                 } else {
                     throw new Exception('Внутри значения тип array не допустим');
                 }
