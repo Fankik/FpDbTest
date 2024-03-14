@@ -1,12 +1,12 @@
 <?php
 
-namespace FpDbTest\DatabaseInterfaces;
+namespace FpDbTest\Database\Interfaces;
 
 /**
- * DatabaseConditionBlocksInterface - Интерфейс класса условных блоков.
+ * ConditionBlocksInterface - Интерфейс класса условных блоков.
  */
 
-interface DatabaseConditionBlocksInterface
+interface ConditionBlocksInterface
 {
     /**
      * @param int $skip Переменная специального значения.

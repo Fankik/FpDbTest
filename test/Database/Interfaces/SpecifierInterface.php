@@ -1,12 +1,12 @@
 <?php
 
-namespace FpDbTest\DatabaseInterfaces;
+namespace FpDbTest\Database\Interfaces;
 
 /**
- * DatabaseSpecifierInterface - Интерфейс класса обработки места вствки и спецификаторов.
+ * SpecifierInterface - Интерфейс класса обработки места вставки и спецификаторов.
  */
 
-interface DatabaseSpecifierInterface
+interface SpecifierInterface
 {
     /**
      * Метод получения обработанного запроса sql.

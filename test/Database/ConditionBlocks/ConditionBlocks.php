@@ -1,15 +1,15 @@
 <?php
 
-namespace FpDbTest\DatabaseConditionBlocks;
+namespace FpDbTest\Database\ConditionBlocks;
 
 use Exception;
-use FpDbTest\DatabaseInterfaces\DatabaseConditionBlocksInterface;
+use FpDbTest\Database\Interfaces\ConditionBlocksInterface;
 
 /**
- * DatabaseConditionBlocks - Класс обработки условных блоков.
+ * ConditionBlocks - Класс обработки условных блоков.
  */
 
-class DatabaseConditionBlocks implements DatabaseConditionBlocksInterface
+class ConditionBlocks implements ConditionBlocksInterface
 {
     /**
      * @var int $skip Переменная специального значения.

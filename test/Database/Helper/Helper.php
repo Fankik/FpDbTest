@@ -1,8 +1,12 @@
 <?php
 
-namespace FpDbTest\DatabaseHelper;
+namespace FpDbTest\Database\Helper;
 
-class DatabaseHelper
+/**
+ * Helper - Для методов помощников не относящихся к основным классам обработки
+ */
+
+class Helper
 {
 
     /**
@@ -52,7 +56,7 @@ class DatabaseHelper
      * Если значения нет в массив, назад вернется передаваемое значение `$value`.
      * 
      * @param mixed $value Значение.
-     * @return mixed Замененое значение | Передаваемое значение.
+     * @return mixed Замененное значение | Передаваемое значение.
      */
 
     static public function defaultConvert(mixed $value): mixed

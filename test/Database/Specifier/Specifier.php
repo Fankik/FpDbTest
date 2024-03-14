@@ -1,33 +1,29 @@
 <?php
 
-namespace FpDbTest\DatabaseSpecifier;
+namespace FpDbTest\Database\Specifier;
 
-use FpDbTest\Database\Database;
-use FpDbTest\DatabaseInterfaces\DatabaseSpecifierInterface;
-use FpDbTest\DatabaseSpecifierTypes\ASpecifier;
-use FpDbTest\DatabaseSpecifierTypes\FSpecifier;
-use FpDbTest\DatabaseSpecifierTypes\SharpSpecifier;
-use FpDbTest\DatabaseSpecifierTypes\StockSpecifier;
-use FpDbTest\DatabaseSpecifierTypes\DSpecifier;
+use FpDbTest\Database\Factory\SpecifierType\SpecifierTypeFactory;
+use FpDbTest\Database\Interfaces\SpecifierInterface;
+use FpDbTest\Database\Specifier\SpecifierTypes\{ASpecifier, FSpecifier, SharpSpecifier, StockSpecifier, DSpecifier};
 
 use Exception;
 
 /**
- * DatabaseSpecifier - Класс обработки места вствки и спецификаторов
+ * Specifier - Класс обработки места вставки и спецификаторов
  */
 
-class DatabaseSpecifier implements DatabaseSpecifierInterface
+class Specifier implements SpecifierInterface
 {
 
     /**
-     * @var array $specifiersClass Массив с классами типов спецификаторов
+     * @var array $specifierTypes Массив с классами типов спецификаторов
      */
 
-    private array $specifiersClass = [];
+    private array $specifierTypes = [];
 
     public function __construct()
     {
-        $this->specifiersClass = [
+        $this->specifierTypes = [
             '?' => StockSpecifier::class,
             '?d' => DSpecifier::class,
             '?a' => ASpecifier::class,
@@ -47,13 +43,11 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
 
     public function getQuery(string $query, array $args): string
     {
-        $specifiers = $this->getSpecifier($query);
+        $specifiers = $this->getSpecifiers($query);
+        var_dump($specifiers);
+        $specifiersArgs = [];
 
         foreach ($specifiers as $key => $specifier) {
-            if (!in_array($specifier, array_keys($this->specifiersClass))) {
-                throw new Exception("Спецификатор $specifier не существует");
-            }
-
             $specifiersArgs[] = [
                 'specifier' => $specifier,
                 'value' => $args[$key]
@@ -73,7 +67,7 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
      * @return array Массив спецификаторов.
      */
 
-    private function getSpecifier(string $query): array
+    private function getSpecifiers(string $query): array
     {
         $pattern = "/\?[^\s]|\?/";
         preg_match_all($pattern, $query, $matches);
@@ -88,11 +82,11 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
      * @return string Класс типа спецификатора.
      */
 
-    private function getSpecifierClass(string $specifier): string
+    private function getSpecifierTypesClass(string $specifier): string
     {
-        if (isset($this->specifiersClass[$specifier])) {
-            if (!empty($this->specifiersClass[$specifier]) && gettype($this->specifiersClass[$specifier]) == 'string') {
-                return $this->specifiersClass[$specifier];
+        if (isset($this->specifierTypes[$specifier])) {
+            if (!empty($this->specifierTypes[$specifier]) && gettype($this->specifierTypes[$specifier]) == 'string') {
+                return $this->specifierTypes[$specifier];
             } else {
                 throw new Exception("Для спецификатора $specifier нет класса");
             }
@@ -111,9 +105,13 @@ class DatabaseSpecifier implements DatabaseSpecifierInterface
     private function setValues(array $specifiers): array
     {
         foreach ($specifiers as &$array) {
-            $specifierClass = $this->getSpecifierClass($array['specifier']);
-            $specifierType = new $specifierClass($array['value']);
-            $array['value'] = $specifierType->get();
+
+            ['specifier' => $specifier, 'value' => $value] = $array;
+
+            $specifierTypesClass = $this->getSpecifierTypesClass($specifier);
+            $specifierType = SpecifierTypeFactory::make($specifierTypesClass);
+
+            $array['value'] = $specifierType->set($value)->process()->get();
         }
 
         return $specifiers;
