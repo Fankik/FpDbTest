@@ -5,6 +5,8 @@ namespace FpDbTest\Database;
 use Exception;
 use FpDbTest\Database\Interfaces\DatabaseInterface;
 
+// Тесты задания
+
 class DatabaseTest
 {
     private DatabaseInterface $db;

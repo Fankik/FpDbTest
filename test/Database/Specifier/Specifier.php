@@ -69,7 +69,7 @@ class Specifier implements SpecifierInterface
 
     private function getSpecifiers(string $query): array
     {
-        $pattern = "/\?[^\s]|\?/";
+        $pattern = "/\?[^\s!{!}]|\?/";
         preg_match_all($pattern, $query, $matches);
 
         return $matches[0];
