@@ -4,8 +4,6 @@ namespace FpDbTest\Database\Specifier\SpecifierTypes;
 use FpDbTest\Database\Helper\Helper;
 use FpDbTest\Database\Interfaces\SpecifierTypesInterface;
 
-use Exception;
-
 /**
  * DSpecifier - Класс обработки спецификатора ?d.
  * Конвертация в целое число.
