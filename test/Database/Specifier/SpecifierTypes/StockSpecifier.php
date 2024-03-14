@@ -32,9 +32,7 @@ class StockSpecifier extends SpecifierTypeAbstract implements SpecifierTypesInte
 
     public function process(): self
     {
-        $this->value = Helper::defaultConvert($this->value);
-
-        if (gettype($this->value) == "string") {
+        if ($this->type == 'string') {
             $this->value = Helper::stringScreening($this->value);
         }
 

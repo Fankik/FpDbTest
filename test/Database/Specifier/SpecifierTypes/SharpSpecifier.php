@@ -33,9 +33,7 @@ class SharpSpecifier extends SpecifierTypeAbstract implements SpecifierTypesInte
         if (is_array($this->value)) {
             foreach ($this->value as &$value) {
                 if (!is_array($value)) {
-                    $value = Helper::defaultConvert($value);
                     $value = Helper::stringApostrophe($value);
-
                 } else {
                     throw new Exception('Внутри значения тип array не допустим');
                 }
@@ -43,7 +41,6 @@ class SharpSpecifier extends SpecifierTypeAbstract implements SpecifierTypesInte
 
             $this->value = implode(", ", $this->value);
         } else {
-            $this->value = Helper::defaultConvert($this->value);
             $this->value = Helper::stringApostrophe($this->value);
         }
 

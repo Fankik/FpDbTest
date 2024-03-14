@@ -8,17 +8,6 @@ namespace FpDbTest\Database\Helper;
 
 class Helper
 {
-
-    /**
-     * @var array $defaultConvertValues Массив для замены значений
-     */
-
-    static private array $defaultConvertValues = [
-        true => 1,
-        false => 0,
-        null => 'NULL'
-    ];
-
     /**
      * Метод экранирования строки символом - `'`.
      * 
@@ -61,17 +50,11 @@ class Helper
 
     static public function defaultConvert(mixed $value): mixed
     {
-        switch (gettype($value)) {
-            case 'integer':
-            case 'float':
-            case 'double':
-                return $value;
-            default:
-                if (isset(self::$defaultConvertValues[$value])) {
-                    return self::$defaultConvertValues[$value];
-                } else {
-                    return $value;
-                }
-        }
+        return match ($value) {
+            true => 1,
+            false => 0,
+            null => 'NULL',
+            default => $value,
+        };
     }
 }

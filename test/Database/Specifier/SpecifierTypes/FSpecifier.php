@@ -32,12 +32,7 @@ class FSpecifier extends SpecifierTypeAbstract implements SpecifierTypesInterfac
 
     public function process(): self
     {
-        $type = gettype($this->value);
-
-        $this->value = match ($type == 'NULL') {
-            true => Helper::defaultConvert($this->value),
-            false => (float) $this->value,
-        };
+        $this->value = (float) $this->value;
 
         return $this;
     }

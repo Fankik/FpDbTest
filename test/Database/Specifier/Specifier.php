@@ -44,7 +44,7 @@ class Specifier implements SpecifierInterface
     public function getQuery(string $query, array $args): string
     {
         $specifiers = $this->getSpecifiers($query);
-        var_dump($specifiers);
+
         $specifiersArgs = [];
 
         foreach ($specifiers as $key => $specifier) {

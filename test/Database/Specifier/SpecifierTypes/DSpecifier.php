@@ -32,12 +32,7 @@ class DSpecifier extends SpecifierTypeAbstract implements SpecifierTypesInterfac
 
     public function process(): self
     {
-        $type = gettype($this->value);
-
-        $this->value = match ($type == 'NULL') {
-            true => Helper::defaultConvert($this->value),
-            false => (int) $this->value,
-        };
+        $this->value = (int) $this->value;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace FpDbTest\Database\Specifier\SpecifierTypes;
 
+use FpDbTest\Database\Helper\Helper;
 use FpDbTest\Database\Interfaces\SpecifierTypesInterface;
 use Exception;
 
@@ -13,9 +14,13 @@ use Exception;
 abstract class SpecifierTypeAbstract implements SpecifierTypesInterface
 {
     /**
+     * @var array $type Тип значения.
+     */
+    protected ?string $type = null;
+
+    /**
      * @var array $types Доступные типы значений.
      */
-
     protected array $types = [];
 
     /**
@@ -36,7 +41,8 @@ abstract class SpecifierTypeAbstract implements SpecifierTypesInterface
         $type = gettype($value);
 
         if (in_array($type, $this->types)) {
-            $this->value = $value;
+            $this->value = Helper::defaultConvert($value);
+            $this->type = $type;
         } else {
             throw new Exception("Тип $type не разрешен");
         }
